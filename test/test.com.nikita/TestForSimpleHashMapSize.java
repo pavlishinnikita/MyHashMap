@@ -6,8 +6,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class Simple {
-    MyHashMap<Integer, Long> hashMap = new MyHashMap<>();
+public class TestForSimpleHashMapSize {
+    MyHashMap<Integer, Long> hashMap = new MyHashMap<>(2);
 
     @Before
     public void init() {
@@ -16,15 +16,21 @@ public class Simple {
         }
     }
 
-    @Test(timeout = 1)
-    public void testForTimeoutGet() {
-        assertEquals((long)this.hashMap.get(1), 10);
+    @Test
+    public void testForSizeWithoutCollision() {
+        assertEquals((long)this.hashMap.size(), 20);
     }
 
     @Test
-    public void testForGet() {
-        for (int i = 0; i < 20; i++) {
-            assertEquals((long)this.hashMap.get(i), (long)i*10);
-        }
+    public void testForSizeWithCollisionWhenDuplicateKey() {
+        hashMap.put(0, (long) 10); // ключ 0 присутствует, размер увеличится не должен
+        assertEquals((long)this.hashMap.size(), 20);
+    }
+
+    @Test
+    public void testForSizeWithCollisionWhenFakePut() {
+        hashMap.fakePut(20, (long) 10, 3); // ключ 20 отсутствует и запись будт произведена
+        // в ячейку ключа 3, коллизия устранится и размер увеличится
+        assertEquals((long)this.hashMap.size(), 21);
     }
 }
