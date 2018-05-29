@@ -1,29 +1,30 @@
 package com.nikita;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.nikita.HashMap.CollisionDetect.NoCollisionDetect;
+import com.nikita.HashMap.CollisionDetect.OpenAddressing;
+import com.nikita.HashMap.MyHashMap;
+
 
 public class Main {
 
-    public static void main(String[] args) {
-        MyHashMap<Integer, Long> myHashMap = new MyHashMap<>(3);
-        myHashMap.put(0, (long)10);
-        myHashMap.put(10, (long)1);
-        myHashMap.put(11, (long)2);
-        myHashMap.put(12, (long)3);
-        System.out.println(myHashMap.keys());
-        System.out.println(myHashMap.values());
-        System.out.println(myHashMap.get(0));
-        System.out.println(myHashMap.get(10));
-        System.out.println(myHashMap.get(11));
-        System.out.println(myHashMap.get(12));
+    public static void myExtend(){
+
+        MyHashMap<Integer, Long> myHashMap = new MyHashMap<>();
+        myHashMap.setBehavior(new NoCollisionDetect());
+        myHashMap.put(1, (long) 10);
+        myHashMap.put(0, (long) 0);
+        myHashMap.put(2, (long) 20);
+        myHashMap.put(3, (long) 30);
+        myHashMap.put(4, (long) 40);
+        myHashMap.put(5, (long) 50);
+        myHashMap.fakePut(6, (long) 60, 3);
+        myHashMap.fakePut(7, (long) 60, 5);
+        System.out.println("For key: " + 6 + " value is: " + myHashMap.get(6));
+        System.out.println("For key: " + 3 + " value is: " + myHashMap.get(3));
+        System.out.println("And size map is: " + myHashMap.size());
     }
-    public String testMapDefault(int numb) {
-        Map<Integer, String> numbers = new HashMap<>();
-        System.out.println(numbers.put(1, "one"));
-        numbers.put(2, "two");
-        System.out.println(numbers.put(5, "five"));
-        numbers.put(3, "three");
-        return numbers.get(numb);
+
+    public static void main(String[] args) {
+        myExtend();
     }
 }
