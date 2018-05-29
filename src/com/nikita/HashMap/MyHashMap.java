@@ -2,42 +2,17 @@ package com.nikita.HashMap;
 
 import com.nikita.HashMap.CollisionDetect.AbstractCollisionBehavior;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 public class MyHashMap <K, V> {
 
-    private int CAPACITY = 16; // стандартная вместимость
+    private int CAPACITY = 16;
     private float LOAD_FACTOR = 0.75f;
-    private int MAX_CAPASITY = Integer.MAX_VALUE / 2; // максимальная вместимость
-    private int threshold = (int)(CAPACITY * LOAD_FACTOR); // максимальное значение после которого меняется размер таблицы
-    private int size = 0;
+    private int MAX_CAPASITY = Integer.MAX_VALUE / 2;
+    private int threshold = (int)(CAPACITY * LOAD_FACTOR); // max value after which table is doubling
     private MyEntry[] table;
     private AbstractCollisionBehavior behavior; // behavior for collision detect
 
     public void setBehavior(AbstractCollisionBehavior behavior) {
         this.behavior = behavior;
-    }
-
-    public Collection<V> values() {
-        Collection<V> vs = new ArrayList<>();
-        for(int i = 0; i < table.length; i++) {
-            if(table[i]!=null) {
-                vs.add((V)table[i].getValue());
-            }
-        }
-        return vs;
-    }
-
-    public Collection<V> keys() {
-        Collection<V> vs = new ArrayList<>();
-        for(int i = 0; i < table.length; i++) {
-            if(table[i]!=null) {
-                vs.add((V)table[i].getKey());
-            }
-        }
-        return vs;
     }
 
     public MyHashMap(){
@@ -68,7 +43,7 @@ public class MyHashMap <K, V> {
         if (key == null) {
             return false;
         }
-        if(size == threshold) {
+        if(behavior.getSize() == threshold) {
             CAPACITY *= 2;
             resize(CAPACITY);
         }
@@ -76,7 +51,6 @@ public class MyHashMap <K, V> {
         MyEntry fakeEntry = new MyEntry(fakeKey, value);
         int index = indexOfTable(fakeEntry.hashCode(), table.length);
         table = behavior.collisionDetect(table, index, entry);
-        size++;
         return true;
     }
 
@@ -84,20 +58,14 @@ public class MyHashMap <K, V> {
         if (key == null) {
             return false;
         }
-        if(size == threshold) {
+        if(behavior.getSize() == threshold){
             CAPACITY *= 2;
             resize(CAPACITY);
         }
         MyEntry entry = new MyEntry(key, value);
         int index = indexOfTable(entry.hashCode(), table.length);
         table = behavior.collisionDetect(table, index, entry);
-        size++;
         return true;
-    }
-
-    private void putElem(int index, MyEntry entry) {
-        table[index] = entry;
-        size++;
     }
 
     public V get(Object key) {
@@ -111,13 +79,13 @@ public class MyHashMap <K, V> {
     }
 
     public int size() {
-        return this.size;
+        return behavior.getSize();
     }
 
     public void transfer(MyEntry[] newTable) {
-        for(int i = 0; i < table.length; i++) {
-            if(table[i] != null) {
-                newTable[indexOfTable(table[i].hashCode(), newTable.length)] = table[i];
+        for (MyEntry aTable : table) {
+            if (aTable != null) {
+                newTable[indexOfTable(aTable.hashCode(), newTable.length)] = aTable;
             }
         }
         table = newTable;
