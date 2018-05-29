@@ -11,6 +11,9 @@ public class NoCollisionDetect extends AbstractCollisionBehavior {
 
     @Override
     public MyEntry[] collisionDetect(MyEntry[] hashTable, int index, MyEntry entry) {
+        if(hashTable[index] == null) {
+            sizeAdd();
+        }
         hashTable[index] = entry;
         return hashTable;
     }
